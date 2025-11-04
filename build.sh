@@ -25,4 +25,4 @@ python manage.py create_sandra_complete || echo "Warning: create_sandra_complete
 # Create or update admin superuser
 # Uses get_or_create internally - data persists in PostgreSQL, only updates password if user exists
 echo "Creating/updating admin superuser..."
-python manage.py create_superuser_cmd admin admin123 --email admin@rbc-bank.com || echo "Warning: create_superuser_cmd had issues"
+python create_superuser.py admin admin@rbc-bank.com admin123 || echo "Warning: create_superuser.py had issues"
