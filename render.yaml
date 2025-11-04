@@ -13,7 +13,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: "royalbank-sphinx.onrender.com,*.onrender.com"
+        value: "rbc-bank.com,www.rbc-bank.com,royalbank-sphinx.onrender.com,*.onrender.com"
       - key: DATABASE_URL
         value: postgresql://royalbank_db_user:2ZQf105WxqmRC6M2jy6dP4wKI0dq69yB@dpg-d453omeuk2gs73fsdgfg-a.oregon-postgres.render.com/royalbank_db
       - key: DEFAULT_FROM_EMAIL
@@ -29,10 +29,7 @@ services:
       - key: EMAIL_USE_TLS
         value: "1"
       - key: SITE_URL
-        fromService:
-          type: web
-          name: royalbank-sphinx
-          property: host
+        value: "https://rbc-bank.com"
 
 databases:
   - name: royalbank-db

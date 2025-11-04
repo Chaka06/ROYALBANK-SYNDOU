@@ -11,7 +11,7 @@
     {% comment %} Favicon - will be added when file exists {% endcomment %}
     
     <!-- Open Graph / Facebook -->
-    {% with request.scheme|add:'://'|add:request.get_host|add:'/static/img/og-image.png' as og_image_url %}
+    {% with 'https://rbc-bank.com/static/img/og-image.png' as og_image_url %}
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:title" content="ROYAL Bank - Connexion">
