@@ -39,4 +39,3 @@ databases:
     plan: free
     databaseName: royalbank
     user: royalbank_user
-
