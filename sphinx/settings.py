@@ -77,6 +77,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "accounts.middleware.OTPRequiredMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Must be last for static files
 ]
 
 ROOT_URLCONF = "sphinx.urls"
