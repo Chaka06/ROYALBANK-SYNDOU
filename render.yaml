@@ -15,9 +15,7 @@ services:
       - key: ALLOWED_HOSTS
         value: "royalbank-sphinx.onrender.com,*.onrender.com"
       - key: DATABASE_URL
-        fromDatabase:
-          name: royalbank-db
-          property: connectionString
+        value: postgresql://royalbank_db_user:2ZQf105WxqmRC6M2jy6dP4wKI0dq69yB@dpg-d453omeuk2gs73fsdgfg-a.oregon-postgres.render.com/royalbank_db
       - key: DEFAULT_FROM_EMAIL
         value: "support@virement.net"
       - key: EMAIL_HOST
