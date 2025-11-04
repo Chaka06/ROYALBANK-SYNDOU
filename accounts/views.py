@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from accounts.models import Account, Card
+from accounts.models import Account
+# Card import removed - card feature disabled
 from notifications.models import Notification
 from transactions.models import Transaction
 from django.http import JsonResponse
@@ -207,30 +208,11 @@ def rib(request):
     return render(request, 'accounts/rib.html', {'account': account, 'user': user})
 
 
-@login_required
-@never_cache
-def card(request):
-    if not request.session.get('otp_verified'):
-        return redirect('otp_verify')
-    user: User = request.user
-    account = getattr(user, 'account', None)
-    if not account:
-        messages.error(request, "Compte introuvable.")
-        return redirect('dashboard')
-    # Create card if it doesn't exist - Format canadien Visa
-    card_obj, created = Card.objects.get_or_create(
-        account=account,
-        defaults={
-            # Visa canadien : commence par 4, format 16 chiffres
-            'card_number': f"4{random.randint(100, 999)}{random.randint(100000000000, 999999999999)}",
-            'cardholder_name': account.display_name.upper(),
-            'expiry_month': 12,
-            'expiry_year': 2028,
-            'cvv': f"{random.randint(100, 999)}",
-            'card_type': 'VISA',
-        }
-    )
-    return render(request, 'accounts/card.html', {'card': card_obj, 'account': account})
+# Card view removed - card feature disabled
+# @login_required
+# @never_cache
+# def card(request):
+#     ...
 
 
 @login_required

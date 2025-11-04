@@ -7,7 +7,6 @@ Application bancaire en ligne Django avec authentification sécurisée, gestion 
 - 🔐 Authentification à deux facteurs (2FA) avec OTP par email
 - 💰 Gestion de compte bancaire avec solde et transactions
 - 📊 Tableau de bord avec aperçu des finances
-- 💳 Carte Visa virtuelle
 - 🏦 Relevé d'Identité Bancaire (RIB) format canadien
 - 💱 Convertisseur de devises en temps réel (CAD, EUR, USD)
 - 📧 Emails transactionnels avec templates HTML professionnels

@@ -293,4 +293,10 @@ X_FRAME_OPTIONS = 'DENY'
 # WhiteNoise configuration to ensure admin static files are served correctly
 # Add max-age cache headers for static files but allow revalidation
 WHITENOISE_MAX_AGE = 31536000 if not DEBUG else 0  # 1 year in production, no cache in dev
-WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: False  # Disable immutable file test for admin
+
+# Disable immutable file test for admin - ensures admin static files are always served
+def whitenoise_immutable_file_test(path, url):
+    """Always return False to allow revalidation of admin static files"""
+    return False
+
+WHITENOISE_IMMUTABLE_FILE_TEST = whitenoise_immutable_file_test

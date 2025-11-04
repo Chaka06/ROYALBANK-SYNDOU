@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from accounts.models import Account, Card
+from accounts.models import Account
+# Card import removed - card feature disabled
 import random
 
 
@@ -63,24 +64,7 @@ class Command(BaseCommand):
                 self.stdout.write(f'  Numéro de compte: {account.formatted_account_number()}')
                 self.stdout.write(f'  Numéro de routage: {account.routing_number()}')
                 
-                # Create Visa card
-                card, card_created = Card.objects.get_or_create(
-                    account=account,
-                    defaults={
-                        'card_number': f"4{random.randint(100, 999)}{random.randint(100000000000, 999999999999)}",
-                        'cardholder_name': account.display_name.upper(),
-                        'expiry_month': 12,
-                        'expiry_year': 2028,
-                        'cvv': f"{random.randint(100, 999)}",
-                        'card_type': 'VISA',
-                        'is_active': True,
-                    }
-                )
-                
-                if card_created:
-                    self.stdout.write(
-                        self.style.SUCCESS(f'✓ Carte Visa créée: {card.masked_number()}')
-                    )
+                # Card creation removed - card feature disabled
             else:
                 self.stdout.write(
                     self.style.WARNING(f'⚠ Compte bancaire existe déjà pour {username}')
