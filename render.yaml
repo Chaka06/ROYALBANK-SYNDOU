@@ -17,8 +17,8 @@ services:
       - key: DATABASE_URL
         value: postgresql://royalbank_db_user:2ZQf105WxqmRC6M2jy6dP4wKI0dq69yB@dpg-d453omeuk2gs73fsdgfg-a.oregon-postgres.render.com/royalbank_db
       - key: DEFAULT_FROM_EMAIL
-        value: "support@virement.netcopie"
-      # Configuration SMTP pour virement.netcopie
+        value: "support@virement.net"
+      # Configuration SMTP pour virement.net
       # Serveur sortant: mail.virement.netcopie ou mail16.lwspanel.com
       # Port SMTP: 587 (TLS) ou 465 (SSL)
       # Authentification requise: Oui
@@ -27,7 +27,7 @@ services:
       - key: EMAIL_PORT
         value: "587"
       - key: EMAIL_HOST_USER
-        value: "support@virement.netcopie"
+        value: "support@virement.net"
       - key: EMAIL_HOST_PASSWORD
         sync: false # À configurer manuellement dans Render Dashboard avec le mot de passe du compte email (utilisez un Secret)
       - key: EMAIL_USE_TLS
