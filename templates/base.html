@@ -8,9 +8,7 @@
     
     <!-- Favicon -->
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" onerror="this.remove()">
-    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}" onerror="this.remove()">
-    <link rel="apple-touch-icon" href="{% static 'img/favicon.png' %}" onerror="this.remove()">
+    {% comment %} Favicon - will be added when file exists {% endcomment %}
     
     <!-- Open Graph / Facebook -->
     {% with request.scheme|add:'://'|add:request.get_host|add:'/static/img/og-image.png' as og_image_url %}
