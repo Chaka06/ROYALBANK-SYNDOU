@@ -28,9 +28,9 @@ urlpatterns = [
     path('profiles/', include('profiles.urls')),
 ]
 
-# Serve static files
+# Serve static files (only in DEBUG mode, WhiteNoise handles it in production)
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
-else:
-    # In production, serve collected static files
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    if settings.STATICFILES_DIRS:
+        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+    else:
+        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

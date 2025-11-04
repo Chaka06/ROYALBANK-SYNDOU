@@ -162,7 +162,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 # Only add static directory if it exists (for production compatibility)
 static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = [static_dir] if static_dir.exists() else []
