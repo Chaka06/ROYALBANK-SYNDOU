@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -201,15 +202,24 @@ EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "30"))
 
 # Optional SMTP configuration via environment variables
 # If EMAIL_HOST is set, switch to SMTP backend
-if os.getenv("EMAIL_HOST"):
+EMAIL_HOST_ENV = os.getenv("EMAIL_HOST")
+if EMAIL_HOST_ENV:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = os.getenv("EMAIL_HOST")
+    EMAIL_HOST = EMAIL_HOST_ENV
     EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
     EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
     EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
     EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "1") == "1"
     EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "0") == "1"
     EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "30"))
+    # Log SMTP configuration (without password)
+    logger = logging.getLogger(__name__)
+    logger.info(f"SMTP configuré: {EMAIL_HOST}:{EMAIL_PORT}, utilisateur: {EMAIL_HOST_USER or 'non défini'}, TLS: {EMAIL_USE_TLS}, SSL: {EMAIL_USE_SSL}")
+else:
+    # Log that file-based backend is being used
+    logger = logging.getLogger(__name__)
+    logger.warning(f"⚠️  EMAIL_HOST non configuré - Les emails seront sauvegardés dans {EMAIL_FILE_PATH} au lieu d'être envoyés par SMTP")
+    logger.warning("⚠️  Configurez EMAIL_HOST, EMAIL_HOST_USER et EMAIL_HOST_PASSWORD dans Render Dashboard pour activer l'envoi d'emails")
 LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"

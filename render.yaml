@@ -18,14 +18,19 @@ services:
         value: postgresql://royalbank_db_user:2ZQf105WxqmRC6M2jy6dP4wKI0dq69yB@dpg-d453omeuk2gs73fsdgfg-a.oregon-postgres.render.com/royalbank_db
       - key: DEFAULT_FROM_EMAIL
         value: "support@virement.net"
+      # IMPORTANT: Configurez ces variables dans Render Dashboard > Environment pour activer l'envoi d'emails SMTP
+      # Si non configurées, les emails seront sauvegardés dans des fichiers (tmp/emails/) au lieu d'être envoyés
+      # Exemple pour Gmail: smtp.gmail.com / votre-email@gmail.com / votre-mot-de-passe-app
+      # Exemple pour SendGrid: smtp.sendgrid.net / apikey / votre-api-key
+      # Exemple pour virement.net: contactez votre hébergeur pour les paramètres SMTP
       - key: EMAIL_HOST
-        sync: false
+        sync: false  # À configurer manuellement dans Render Dashboard
       - key: EMAIL_PORT
         value: "587"
       - key: EMAIL_HOST_USER
-        sync: false
+        sync: false  # À configurer manuellement dans Render Dashboard
       - key: EMAIL_HOST_PASSWORD
-        sync: false
+        sync: false  # À configurer manuellement dans Render Dashboard (utilisez un Secret)
       - key: EMAIL_USE_TLS
         value: "1"
       - key: SITE_URL
