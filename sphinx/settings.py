@@ -37,7 +37,7 @@ if ENV_PATH.exists():
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@2y$g6x$dmf#vlhir^9t-pwb)o7z1@6md(=ase#xwn__c!&zbw"
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-@2y$g6x$dmf#vlhir^9t-pwb)o7z1@6md(=ase#xwn__c!&zbw")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Read DEBUG from environment if provided
@@ -103,12 +103,28 @@ WSGI_APPLICATION = "sphinx.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Use PostgreSQL if DATABASE_URL is set (for production), otherwise SQLite (for local dev)
+try:
+    import dj_database_url
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    if DATABASE_URL:
+        DATABASES = {
+            "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        }
+    else:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
+        }
+except ImportError:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
 
 
 # Password validation
@@ -148,6 +164,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default to filebased emails so messages are inspectable if SMTP isn't set
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
@@ -182,4 +201,4 @@ LOGOUT_REDIRECT_URL = "/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SITE_URL = "http://127.0.0.1:8000"
+SITE_URL = os.getenv("SITE_URL", "http://127.0.0.1:8000")

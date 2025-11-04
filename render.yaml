@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: royalbank-sphinx
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn sphinx.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.18
+      - key: DEBUG
+        value: "0"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: "royalbank-sphinx.onrender.com,*.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: royalbank-db
+          property: connectionString
+      - key: DEFAULT_FROM_EMAIL
+        value: "support@virement.net"
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: EMAIL_USE_TLS
+        value: "1"
+      - key: SITE_URL
+        fromService:
+          type: web
+          name: royalbank-sphinx
+          property: host
+
+databases:
+  - name: royalbank-db
+    plan: free
+    databaseName: royalbank
+    user: royalbank_user
+
