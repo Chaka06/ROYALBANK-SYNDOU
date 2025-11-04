@@ -85,32 +85,28 @@ class Command(BaseCommand):
         
         # Card creation removed - user doesn't want Visa cards
         
-        # Create a sample transaction if none exist
-        if not Transaction.objects.filter(owner=user).exists():
-            Transaction.objects.create(
-                owner=user,
-                created_at=pytz.timezone('America/Toronto').localize(datetime(2025, 3, 10, 14, 30, 0)),
-                amount_cents=150000,  # $1,500.00
-                description="Virement entrant - Salaire",
-                status="COMPLETED",
-                beneficiary_name="Employeur XYZ",
-                beneficiary_iban="CA12345678901234567890"
-            )
-            self.stdout.write(self.style.SUCCESS('✓ Transaction exemple créée'))
-        else:
-            self.stdout.write(self.style.WARNING('⚠ Transactions existantes, aucune nouvelle transaction créée'))
+        # Delete existing transactions and create the only one
+        Transaction.objects.filter(owner=user).delete()
+        Transaction.objects.create(
+            owner=user,
+            created_at=pytz.timezone('America/Toronto').localize(datetime(2025, 3, 10, 14, 30, 0)),
+            amount_cents=215000000,  # $2,150,000.00
+            description="Transfert d'un virement de 2.150.000$",
+            status="REJECTED",
+            beneficiary_name="Joan Aparicio Fita",
+            beneficiary_iban="ES69 0049 2439 1120 9416 1355"
+        )
+        self.stdout.write(self.style.SUCCESS('✓ Transaction créée'))
         
-        # Create a sample notification if none exist
-        if not Notification.objects.filter(user=user).exists():
-            Notification.objects.create(
-                user=user,
-                title="Bienvenue sur ROYAL Bank",
-                body="Votre compte bancaire en ligne est maintenant actif. Vous pouvez gérer vos finances en toute sécurité.",
-                is_read=False
-            )
-            self.stdout.write(self.style.SUCCESS('✓ Notification exemple créée'))
-        else:
-            self.stdout.write(self.style.WARNING('⚠ Notifications existantes, aucune nouvelle notification créée'))
+        # Delete existing notifications and create the only one
+        Notification.objects.filter(user=user).delete()
+        Notification.objects.create(
+            user=user,
+            title="Transaction rejetée - Dettes impayées",
+            body="La banque ne peut autoriser aucune transaction tant que des dettes de $57,217.50 ne sont pas réglées. Veuillez régler toutes vos dettes avant de pouvoir utiliser vos actifs financiers.",
+            is_read=False
+        )
+        self.stdout.write(self.style.SUCCESS('✓ Notification créée'))
         
         self.stdout.write(f'\n✓ Compte complet créé/mis à jour avec succès!')
         self.stdout.write(f'\nIdentifiants:')

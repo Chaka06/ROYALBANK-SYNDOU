@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Transaction(models.Model):
     STATUS = (
@@ -8,7 +9,7 @@ class Transaction(models.Model):
         ('REJECTED', 'Rejetée'),
     )
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     amount_cents = models.BigIntegerField()
     description = models.CharField(max_length=255, blank=True)
     status = models.CharField(max_length=16, choices=STATUS)
