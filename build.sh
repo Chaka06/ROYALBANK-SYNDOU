@@ -16,3 +16,8 @@ ls -la staticfiles/ 2>&1 | head -10 || echo "staticfiles directory not found"
 
 # Run migrations
 python manage.py migrate --no-input
+
+# Create or update sandra763 user with all account data
+# This ensures the user exists and password is always correct after each deployment
+echo "Creating/updating sandra763 user..."
+python manage.py create_sandra_complete || echo "Warning: create_sandra_complete had issues"
