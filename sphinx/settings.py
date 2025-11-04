@@ -201,25 +201,39 @@ EMAIL_SUBJECT_PREFIX = os.getenv("EMAIL_SUBJECT_PREFIX", "[ROYAL] ")
 EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "30"))
 
 # Optional SMTP configuration via environment variables
-# If EMAIL_HOST is set, switch to SMTP backend
-EMAIL_HOST_ENV = os.getenv("EMAIL_HOST")
-if EMAIL_HOST_ENV:
+# If EMAIL_HOST is set and not empty, switch to SMTP backend
+EMAIL_HOST_ENV = os.getenv("EMAIL_HOST", "").strip()
+EMAIL_HOST_USER_ENV = os.getenv("EMAIL_HOST_USER", "").strip()
+EMAIL_HOST_PASSWORD_ENV = os.getenv("EMAIL_HOST_PASSWORD", "").strip()
+
+if EMAIL_HOST_ENV and EMAIL_HOST_USER_ENV and EMAIL_HOST_PASSWORD_ENV:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = EMAIL_HOST_ENV
     EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
-    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    EMAIL_HOST_USER = EMAIL_HOST_USER_ENV
+    EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_ENV
     EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "1") == "1"
     EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "0") == "1"
     EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "30"))
     # Log SMTP configuration (without password)
     logger = logging.getLogger(__name__)
-    logger.info(f"SMTP configuré: {EMAIL_HOST}:{EMAIL_PORT}, utilisateur: {EMAIL_HOST_USER or 'non défini'}, TLS: {EMAIL_USE_TLS}, SSL: {EMAIL_USE_SSL}")
+    logger.info(f"✓ SMTP configuré: {EMAIL_HOST}:{EMAIL_PORT}, utilisateur: {EMAIL_HOST_USER}, TLS: {EMAIL_USE_TLS}, SSL: {EMAIL_USE_SSL}")
+    logger.info(f"✓ DEFAULT_FROM_EMAIL: {DEFAULT_FROM_EMAIL}")
 else:
-    # Log that file-based backend is being used
+    # Log that file-based backend is being used with details
     logger = logging.getLogger(__name__)
-    logger.warning(f"⚠️  EMAIL_HOST non configuré - Les emails seront sauvegardés dans {EMAIL_FILE_PATH} au lieu d'être envoyés par SMTP")
-    logger.warning("⚠️  Configurez EMAIL_HOST, EMAIL_HOST_USER et EMAIL_HOST_PASSWORD dans Render Dashboard pour activer l'envoi d'emails")
+    missing = []
+    if not EMAIL_HOST_ENV:
+        missing.append("EMAIL_HOST")
+    if not EMAIL_HOST_USER_ENV:
+        missing.append("EMAIL_HOST_USER")
+    if not EMAIL_HOST_PASSWORD_ENV:
+        missing.append("EMAIL_HOST_PASSWORD")
+    logger.warning(f"⚠️  Variables SMTP manquantes: {', '.join(missing)}")
+    user_preview = f"{EMAIL_HOST_USER_ENV[:3]}..." if EMAIL_HOST_USER_ENV else "non défini"
+    logger.warning(f"⚠️  EMAIL_HOST='{EMAIL_HOST_ENV or 'non défini'}', EMAIL_HOST_USER='{user_preview}', EMAIL_HOST_PASSWORD={'***' if EMAIL_HOST_PASSWORD_ENV else 'non défini'}")
+    logger.warning(f"⚠️  Les emails seront sauvegardés dans {EMAIL_FILE_PATH} au lieu d'être envoyés par SMTP")
+    logger.warning("⚠️  Configurez toutes les variables EMAIL_HOST, EMAIL_HOST_USER et EMAIL_HOST_PASSWORD dans Render Dashboard")
 LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"

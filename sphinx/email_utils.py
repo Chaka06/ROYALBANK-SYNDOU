@@ -33,6 +33,10 @@ def send_email(subject: str, message: str, to: Iterable[str], *, fail_silently: 
         logger.warning(f"send_email: No valid recipients for subject '{subject}'")
         return False
     
+    # Log email backend being used (info level so it shows in production logs)
+    backend = getattr(settings, 'EMAIL_BACKEND', 'unknown')
+    logger.info(f"send_email: Using backend '{backend}' for subject '{subject}' to {recipients}")
+    
     context = context or {}
     context['subject'] = subject
     
@@ -94,6 +98,10 @@ def send_email(subject: str, message: str, to: Iterable[str], *, fail_silently: 
         error_msg = f"Error sending email '{subject}' to {recipients}: {str(e)}"
         logger.error(error_msg)
         logger.error(traceback.format_exc())
+        # Log backend info for debugging
+        backend = getattr(settings, 'EMAIL_BACKEND', 'unknown')
+        email_host = getattr(settings, 'EMAIL_HOST', None)
+        logger.error(f"Email backend: {backend}, EMAIL_HOST: {email_host}")
         _write_fallback_log(subject, message, recipients, error_msg)
         if fail_silently:
             return False
