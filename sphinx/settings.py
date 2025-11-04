@@ -186,7 +186,11 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 WHITENOISE_USE_FINDERS = DEBUG  # Use finders only in development
 WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh only in development
 WHITENOISE_ROOT = STATIC_ROOT  # Root for static files
-WHITENOISE_INDEX_FILE = False  # Don't serve index files
+WHITENOISE_INDEX_FILE = False
+
+# WhiteNoise cache configuration for admin static files
+WHITENOISE_MANIFEST_STRICT = False  # Don't fail if manifest entry missing
+WHITENOISE_SKIP_COMPRESSED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']  # Skip already compressed files  # Don't serve index files
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default to filebased emails so messages are inspectable if SMTP isn't set
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
