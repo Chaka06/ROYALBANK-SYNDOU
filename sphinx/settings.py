@@ -70,7 +70,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # For static files in production
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -163,14 +162,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
-# Only add static directory if it exists (for production compatibility)
-static_dir = BASE_DIR / "static"
-STATICFILES_DIRS = [static_dir] if static_dir.exists() else []
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# WhiteNoise configuration for static files
-# Use simple storage without manifest to avoid errors
-STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
+# WhiteNoise configuration - add middleware at the end
+WHITENOISE_USE_FINDERS = False  # Don't use finders, only serve from STATIC_ROOT
+WHITENOISE_ROOT = STATIC_ROOT
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default to filebased emails so messages are inspectable if SMTP isn't set
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

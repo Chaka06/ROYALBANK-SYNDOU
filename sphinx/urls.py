@@ -28,9 +28,7 @@ urlpatterns = [
     path('profiles/', include('profiles.urls')),
 ]
 
-# Serve static files (only in DEBUG mode, WhiteNoise handles it in production)
+# WhiteNoise handles static files in production, but we add URL patterns for DEBUG
 if settings.DEBUG:
-    if settings.STATICFILES_DIRS:
-        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
-    else:
-        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()
