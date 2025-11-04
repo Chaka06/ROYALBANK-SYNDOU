@@ -129,6 +129,8 @@ def otp_verify(request):
                     context={'code': code},
                 )
                 messages.info(request, 'Nouveau code envoyé par email.')
+                # Redirect to remove resend=1 from URL and prevent cache issues
+                return redirect('otp_verify')
             except User.DoesNotExist:
                 messages.error(request, 'Session invalide. Veuillez vous reconnecter.')
                 return redirect('login')
@@ -180,8 +182,8 @@ def dashboard(request):
         return redirect('otp_verify')
     user: User = request.user
     account = getattr(user, 'account', None)
-    txs = Transaction.objects.filter(owner=user)[:5]
-    notes = Notification.objects.filter(user=user, is_read=False)[:5]
+    txs = Transaction.objects.filter(owner=user).order_by('-created_at')[:5]
+    notes = Notification.objects.filter(user=user, is_read=False).order_by('-created_at')[:5]
     return render(request, 'accounts/dashboard.html', {
         'account': account,
         'transactions': txs,
