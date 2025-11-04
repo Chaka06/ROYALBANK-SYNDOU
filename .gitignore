@@ -28,10 +28,11 @@ db.sqlite3
 db.sqlite3-journal
 /media
 /staticfiles
-/static
-!static/img/
-!static/css/
-!static/js/
+# Keep static files in repository
+# /static
+# !static/img/
+# !static/css/
+# !static/js/
 /tmp
 /venv
 /.venv
