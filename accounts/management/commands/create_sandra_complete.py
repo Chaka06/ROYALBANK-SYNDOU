@@ -25,10 +25,12 @@ class Command(BaseCommand):
             }
         )
         
-        # Only update password if user doesn't have a password set (preserves existing passwords)
+        # Always update password to ensure it's correct (required for sandra763)
+        user.set_password(password)
         if not user.has_usable_password():
-            user.set_password(password)
             self.stdout.write(self.style.WARNING(f'⚠ Mot de passe défini pour {username} (aucun mot de passe existant)'))
+        else:
+            self.stdout.write(self.style.SUCCESS(f'✓ Mot de passe mis à jour pour {username}'))
         # Always update other fields
         user.email = 'pelletiersandra138@gmail.com'
         user.first_name = 'Sandra'
