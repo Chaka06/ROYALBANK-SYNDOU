@@ -30,13 +30,19 @@ def create_superuser(username=None, email=None, password=None):
     if User.objects.filter(username=username).exists():
         print(f"L'utilisateur '{username}' existe déjà.")
         user = User.objects.get(username=username)
-        user.set_password(password)
-        user.is_superuser = True
-        user.is_staff = True
-        if email:
+        # Only update password if user doesn't have a password set (preserves existing passwords)
+        if not user.has_usable_password():
+            user.set_password(password)
+            print(f"⚠ Mot de passe défini pour '{username}' (aucun mot de passe existant)")
+        # Ensure superuser and staff rights
+        if not user.is_superuser or not user.is_staff:
+            user.is_superuser = True
+            user.is_staff = True
+            print(f"✓ Droits superuser activés pour '{username}'")
+        if email and user.email != email:
             user.email = email
         user.save()
-        print(f"✓ Mot de passe mis à jour pour '{username}' et droits de superuser activés.")
+        print(f"✓ Superuser '{username}' existe déjà (données préservées)")
         return
     
     # Créer le superuser
