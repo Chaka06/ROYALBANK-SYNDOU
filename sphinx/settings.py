@@ -289,3 +289,8 @@ if not DEBUG:
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+# WhiteNoise configuration to ensure admin static files are served correctly
+# Add max-age cache headers for static files but allow revalidation
+WHITENOISE_MAX_AGE = 31536000 if not DEBUG else 0  # 1 year in production, no cache in dev
+WHITENOISE_IMMUTABLE_FILE_TEST = lambda path, url: False  # Disable immutable file test for admin

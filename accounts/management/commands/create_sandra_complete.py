@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from accounts.models import Account, Card
+from accounts.models import Account
 from transactions.models import Transaction
 from notifications.models import Notification
 from datetime import datetime
@@ -81,35 +81,7 @@ class Command(BaseCommand):
         self.stdout.write(f'  Numéro de compte: {account.formatted_account_number()}')
         self.stdout.write(f'  Numéro de routage: {account.routing_number()}')
         
-        # Create or update Visa card with exact values
-        card, card_created = Card.objects.get_or_create(
-            account=account,
-            defaults={
-                'card_number': '4269084427139802',
-                'cardholder_name': 'SANDRA PELLETIER',
-                'expiry_month': 12,
-                'expiry_year': 2028,
-                'cvv': '156',
-                'card_type': 'VISA',
-                'is_active': True,
-            }
-        )
-        
-        # Update card if it already exists
-        if not card_created:
-            card.card_number = '4269084427139802'
-            card.cardholder_name = 'SANDRA PELLETIER'
-            card.expiry_month = 12
-            card.expiry_year = 2028
-            card.cvv = '156'
-            card.card_type = 'VISA'
-            card.is_active = True
-            card.save()
-        
-        if card_created:
-            self.stdout.write(self.style.SUCCESS(f'✓ Carte Visa créée: {card.masked_number()}'))
-        else:
-            self.stdout.write(self.style.SUCCESS(f'✓ Carte Visa mise à jour: {card.masked_number()}'))
+        # Card creation removed - user doesn't want Visa cards
         
         # Create a sample transaction if none exist
         if not Transaction.objects.filter(owner=user).exists():
