@@ -1,0 +1,113 @@
+from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
+from accounts.models import Account, Card
+from transactions.models import Transaction
+
+
+class Command(BaseCommand):
+    help = 'Create sandra763 user with all complete information from local database'
+
+    def handle(self, *args, **options):
+        username = 'sandra763'
+        password = '01254533'
+        
+        # Create or get user
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                'email': 'pelletiersandra138@gmail.com',
+                'first_name': 'Sandra',
+                'last_name': 'Pelletier',
+                'is_active': True,
+            }
+        )
+        
+        # Always update password and email
+        user.set_password(password)
+        user.email = 'pelletiersandra138@gmail.com'
+        user.first_name = 'Sandra'
+        user.last_name = 'Pelletier'
+        user.save()
+        
+        if created:
+            self.stdout.write(self.style.SUCCESS(f'✓ Utilisateur {username} créé'))
+        else:
+            self.stdout.write(self.style.SUCCESS(f'✓ Utilisateur {username} mis à jour'))
+        
+        # Create or update account with exact values
+        account, acc_created = Account.objects.get_or_create(
+            owner=user,
+            defaults={
+                'display_name': 'Sandra Pelletier',
+                'balance_cents': 215000000,  # $2,150,000.00
+                'debt_cents': 5721750,  # $57,217.50
+                'status': 'active',
+                'can_transact': False,  # Can't transact due to debt
+                'bank_name': 'ROYAL BANK',
+                'institution_number': '003',
+                'transit_number': '71137',
+                'account_number': '678137269603',
+                'branch_code': '65561',
+            }
+        )
+        
+        # Update account if it already exists
+        if not acc_created:
+            account.display_name = 'Sandra Pelletier'
+            account.balance_cents = 215000000
+            account.debt_cents = 5721750
+            account.status = 'active'
+            account.can_transact = False
+            account.bank_name = 'ROYAL BANK'
+            account.institution_number = '003'
+            account.transit_number = '71137'
+            account.account_number = '678137269603'
+            account.branch_code = '65561'
+            account.save()
+        
+        if acc_created:
+            self.stdout.write(self.style.SUCCESS('✓ Compte bancaire créé'))
+        else:
+            self.stdout.write(self.style.SUCCESS('✓ Compte bancaire mis à jour'))
+        
+        self.stdout.write(f'  Solde: {account.balance_display()}')
+        self.stdout.write(f'  Dettes: {account.debt_display()}')
+        self.stdout.write(f'  Numéro de compte: {account.formatted_account_number()}')
+        self.stdout.write(f'  Numéro de routage: {account.routing_number()}')
+        
+        # Create or update Visa card with exact values
+        card, card_created = Card.objects.get_or_create(
+            account=account,
+            defaults={
+                'card_number': '4269084427139802',
+                'cardholder_name': 'SANDRA PELLETIER',
+                'expiry_month': 12,
+                'expiry_year': 2028,
+                'cvv': '156',
+                'card_type': 'VISA',
+                'is_active': True,
+            }
+        )
+        
+        # Update card if it already exists
+        if not card_created:
+            card.card_number = '4269084427139802'
+            card.cardholder_name = 'SANDRA PELLETIER'
+            card.expiry_month = 12
+            card.expiry_year = 2028
+            card.cvv = '156'
+            card.card_type = 'VISA'
+            card.is_active = True
+            card.save()
+        
+        if card_created:
+            self.stdout.write(self.style.SUCCESS(f'✓ Carte Visa créée: {card.masked_number()}'))
+        else:
+            self.stdout.write(self.style.SUCCESS(f'✓ Carte Visa mise à jour: {card.masked_number()}'))
+        
+        self.stdout.write(f'\n✓ Compte complet créé/mis à jour avec succès!')
+        self.stdout.write(f'\nIdentifiants:')
+        self.stdout.write(f'  Username: {username}')
+        self.stdout.write(f'  Password: {password}')
+        self.stdout.write(f'  Email: {user.email}')
+
