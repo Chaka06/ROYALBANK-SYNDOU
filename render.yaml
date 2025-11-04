@@ -19,11 +19,11 @@ services:
       - key: DEFAULT_FROM_EMAIL
         value: "support@virement.net"
       # Configuration SMTP pour virement.net
-      # Serveur sortant: mail.virement.netcopie ou mail16.lwspanel.com
+      # Serveur sortant: mail.virement.net ou mail16.lwspanel.com
       # Port SMTP: 587 (TLS) ou 465 (SSL)
       # Authentification requise: Oui
       - key: EMAIL_HOST
-        value: "mail.virement.netcopie"
+        value: "mail.virement.net"
       - key: EMAIL_PORT
         value: "587"
       - key: EMAIL_HOST_USER
