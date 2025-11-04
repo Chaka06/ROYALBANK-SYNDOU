@@ -171,6 +171,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # WhiteNoise configuration for static files
 # Use CompressedStaticFilesStorage instead of Manifest to avoid missing file errors
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# WhiteNoise settings
+WHITENOISE_USE_FINDERS = True  # Allow WhiteNoise to find files in STATICFILES_DIRS
+WHITENOISE_AUTOREFRESH = True  # Auto-refresh in development (DEBUG mode)
+WHITENOISE_ROOT = STATIC_ROOT  # Root directory for static files
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default to filebased emails so messages are inspectable if SMTP isn't set
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
