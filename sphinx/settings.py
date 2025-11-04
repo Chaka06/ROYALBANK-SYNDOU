@@ -41,14 +41,27 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-@2y$g6x$dmf#vlhir^9t-pwb)o
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Read DEBUG from environment if provided
-DEBUG = os.getenv("DEBUG", "1") == "1"
+DEBUG = os.getenv("DEBUG", "1").lower() in ("1", "true", "yes")
 
 # Hosts allowed when DEBUG=False (comma-separated in env). Defaults for local dev.
+ALLOWED_HOSTS_STR = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost")
 ALLOWED_HOSTS = [
     h.strip()
-    for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    for h in ALLOWED_HOSTS_STR.split(",")
     if h.strip()
 ]
+
+# In production, also add the domain if not in ALLOWED_HOSTS
+if not DEBUG and ALLOWED_HOSTS_STR:
+    # Add common variations
+    for host in ALLOWED_HOSTS[:]:  # Copy list to avoid modification during iteration
+        if host and '.' in host:
+            # Add domain without www if www is present
+            if host.startswith('www.'):
+                ALLOWED_HOSTS.append(host[4:])
+            # Add www version if not present
+            elif not any(h.startswith('www.' + host) for h in ALLOWED_HOSTS):
+                ALLOWED_HOSTS.append('www.' + host)
 
 
 # Application definition
