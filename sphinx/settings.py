@@ -166,10 +166,13 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# WhiteNoise configuration - no custom storage, just use default
-# WhiteNoise will serve files from STATIC_ROOT automatically
-WHITENOISE_USE_FINDERS = True  # Allow WhiteNoise to find files
-WHITENOISE_AUTOREFRESH = True  # Refresh in development
+# WhiteNoise configuration for production
+# In production (DEBUG=False), WhiteNoise serves files from STATIC_ROOT
+# In development, use finders for auto-reload
+WHITENOISE_USE_FINDERS = DEBUG  # Use finders only in development
+WHITENOISE_AUTOREFRESH = DEBUG  # Auto-refresh only in development
+WHITENOISE_ROOT = STATIC_ROOT  # Root for static files
+WHITENOISE_INDEX_FILE = False  # Don't serve index files
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default to filebased emails so messages are inspectable if SMTP isn't set
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
