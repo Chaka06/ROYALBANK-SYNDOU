@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+  <a href="/dashboard/" class="btn btn-outline-primary btn-sm mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Retour au tableau de bord
+  </a>
+  <h4 class="section-title">Relevé d'Identité Bancaire (RIB)</h4>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body p-3">
+        <h6 class="text-primary mb-3">{{ account.bank_name }}</h6>
+          <!-- Compact rectangle RIB - Format canadien -->
+          <div class="border p-3 bg-light" style="width: 100%; max-width: 540px; min-height: 180px;">
+            <div class="row g-2 mb-2">
+              <div class="col-12">
+                <div class="text-muted" style="font-size: 0.75rem;">Titulaire du compte</div>
+                <div class="fw-bold" style="font-size: 0.9rem;">{{ account.display_name }}</div>
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-12">
+                <div class="text-muted" style="font-size: 0.75rem;">Numéro de compte</div>
+                <div class="fw-bold" style="font-size: 0.9rem; letter-spacing: 0.05em;">{{ account.formatted_account_number }}</div>
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <div class="text-muted" style="font-size: 0.75rem;">Institution</div>
+                <div class="fw-bold" style="font-size: 0.9rem;">{{ account.institution_number }}</div>
+              </div>
+              <div class="col-6">
+                <div class="text-muted" style="font-size: 0.75rem;">Numéro de transit</div>
+                <div class="fw-bold" style="font-size: 0.9rem;">{{ account.transit_number }}</div>
+              </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-12">
+                <div class="text-muted" style="font-size: 0.75rem;">Numéro de routage</div>
+                <div class="fw-bold" style="font-size: 0.95rem;">{{ account.routing_number }}</div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-3">Informations</h6>
+        <div class="mb-3">
+          <div class="text-muted small">Banque</div>
+          <div class="fw-bold">{{ account.bank_name }}</div>
+        </div>
+        <div class="mb-3">
+          <div class="text-muted small">Solde</div>
+          <div class="fw-bold fs-5 text-primary">{{ account.balance_display }}</div>
+        </div>
+        <div>
+          <div class="text-muted small">Statut</div>
+          <div class="fw-bold">
+            {% if account.status == 'active' %}
+              <span class="badge bg-success">Actif</span>
+            {% else %}
+              <span class="badge bg-danger">Bloqué</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

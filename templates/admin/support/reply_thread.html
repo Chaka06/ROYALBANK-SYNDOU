@@ -1,0 +1,94 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url 'admin:support_chatthread_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div style="margin-bottom: 20px;">
+    <strong>Utilisateur:</strong> {{ thread.user.username }} ({{ thread.user.email|default:"Pas d'email" }})<br>
+    <strong>Date de création:</strong> {{ thread.created_at|date:"d/m/Y H:i" }}<br>
+    <strong>Statut:</strong> {% if thread.is_closed %}<span style="color: red;">Fermé</span>{% else %}<span style="color: green;">Ouvert</span>{% endif %}
+</div>
+
+<div style="background: #f9f9f9; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; max-height: 500px; overflow-y: auto;">
+    <h3 style="margin-top: 0;">Historique des messages</h3>
+    {% for msg in messages %}
+    <div style="margin-bottom: 20px; padding: 15px; background: {% if msg.sender == 'admin' %}#e3f2fd{% else %}#ffffff{% endif %}; border-left: 4px solid {% if msg.sender == 'admin' %}#0047bb{% else %}#666666{% endif %}; border-radius: 4px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <strong style="color: {% if msg.sender == 'admin' %}#0047bb{% else %}#333{% endif %};">
+                {% if msg.sender == 'admin' %}
+                    🎧 Support ROYAL
+                {% else %}
+                    👤 {{ thread.user.username }}
+                {% endif %}
+            </strong>
+            <small style="color: #666;">{{ msg.created_at|date:"d/m/Y H:i" }}</small>
+        </div>
+        <div style="white-space: pre-wrap; line-height: 1.6;">{{ msg.content }}</div>
+    </div>
+    {% empty %}
+    <p style="color: #666; font-style: italic;">Aucun message dans cette discussion.</p>
+    {% endfor %}
+</div>
+
+<form method="post" style="background: #fff; border: 2px solid #0047bb; padding: 20px; border-radius: 4px;">
+    {% csrf_token %}
+    <h3 style="margin-top: 0; color: #0047bb;">Répondre</h3>
+    <div style="margin-bottom: 15px;">
+        <label for="reply_content" style="display: block; margin-bottom: 5px; font-weight: bold;">Votre réponse:</label>
+        <textarea 
+            id="reply_content" 
+            name="reply_content" 
+            rows="6" 
+            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: Arial, sans-serif; font-size: 14px;"
+            placeholder="Tapez votre réponse ici..."
+            required></textarea>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button type="submit" style="background-color: #0047bb; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            📤 Envoyer la réponse
+        </button>
+        <a href="{% url 'admin:support_chatthread_changelist' %}" style="background-color: #666; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Annuler
+        </a>
+        <a href="{% url 'admin:support_chatthread_change' thread.id %}" style="background-color: #999; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Voir les détails
+        </a>
+        {% if thread.is_closed %}
+        <a href="{% url 'admin:support_chatthread_change' thread.id %}" style="background-color: #0a7f2e; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Rouvrir la discussion
+        </a>
+        {% else %}
+        <a href="{% url 'admin:support_chatthread_change' thread.id %}" style="background-color: #d0342c; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Fermer la discussion
+        </a>
+        {% endif %}
+    </div>
+</form>
+
+<style>
+    .breadcrumbs {
+        margin-bottom: 20px;
+        padding: 10px 0;
+    }
+    .breadcrumbs a {
+        color: #417690;
+        text-decoration: none;
+    }
+    .breadcrumbs a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+

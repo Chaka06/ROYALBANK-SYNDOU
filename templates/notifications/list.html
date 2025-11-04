@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+  <h4 class="section-title">Notifications</h4>
+</div>
+
+{% if notifications %}
+  <div class="card">
+    <div class="card-body">
+      <ul class="list-group list-group-flush">
+        {% for n in notifications %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="fw-bold">{{ n.title }}</div>
+              {% if not n.is_read %}
+                <span class="badge bg-primary">Nouveau</span>
+              {% endif %}
+            </div>
+            <div class="mb-2">{{ n.body }}</div>
+            <small class="text-muted">
+              <i class="bi bi-clock me-1"></i>{{ n.created_at|date:'d/m/Y H:i' }}
+            </small>
+          </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item text-center text-muted py-5">
+          <i class="bi bi-bell-slash" style="font-size: 2rem;"></i>
+          <div class="mt-2">Aucune notification</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  {% if notifications.has_other_pages %}
+  <nav aria-label="Pagination des notifications">
+    <ul class="pagination justify-content-center mt-4">
+      {% if notifications.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1">
+            <i class="bi bi-chevron-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ notifications.previous_page_number }}">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link"><i class="bi bi-chevron-double-left"></i></span>
+        </li>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+        </li>
+      {% endif %}
+      
+      {% for num in notifications.paginator.page_range %}
+        {% if notifications.number == num %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% elif num > notifications.number|add:'-3' and num < notifications.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      
+      {% if notifications.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ notifications.next_page_number }}">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ notifications.paginator.num_pages }}">
+            <i class="bi bi-chevron-double-right"></i>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+        </li>
+        <li class="page-item disabled">
+          <span class="page-link"><i class="bi bi-chevron-double-right"></i></span>
+        </li>
+      {% endif %}
+    </ul>
+    <div class="text-center text-muted small mt-2">
+      Page {{ notifications.number }} sur {{ notifications.paginator.num_pages }}
+    </div>
+  </nav>
+  {% endif %}
+{% else %}
+  <div class="card">
+    <div class="card-body text-center text-muted py-5">
+      <i class="bi bi-bell-slash" style="font-size: 3rem;"></i>
+      <div class="mt-3">Aucune notification</div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

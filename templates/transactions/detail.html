@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="mb-4">
+  <a href="/transactions/" class="btn btn-outline-primary btn-sm mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Retour à l'historique
+  </a>
+  <h4 class="section-title">Détails de la transaction</h4>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div>
+            <h5 class="mb-1">Référence transaction</h5>
+            <code class="text-primary">{{ transaction.transaction_number }}</code>
+          </div>
+          <div>
+            {% if transaction.status == 'REJECTED' %}
+              <span class="badge bg-danger">REJETÉ</span>
+            {% elif transaction.status == 'COMPLETED' %}
+              <span class="badge bg-success">EFFECTUÉE</span>
+            {% else %}
+              <span class="badge bg-secondary">EN ATTENTE</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <div class="text-muted small">Date et heure</div>
+            <div class="fw-bold">{{ transaction.created_at|date:'d/m/Y' }} à {{ transaction.created_at|date:'H:i' }}</div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Montant</div>
+            <div class="fw-bold fs-5 text-primary">{{ transaction.amount_display }}</div>
+          </div>
+        </div>
+
+        {% if transaction.description %}
+        <div class="mb-3">
+          <div class="text-muted small">Description</div>
+          <div class="fw-bold">{{ transaction.description }}</div>
+        </div>
+        {% endif %}
+
+        {% if transaction.beneficiary_name or transaction.beneficiary_iban %}
+        <hr>
+        <h6 class="mb-3">Informations bénéficiaire</h6>
+        {% if transaction.beneficiary_name %}
+        <div class="mb-2">
+          <div class="text-muted small">Nom du bénéficiaire</div>
+          <div class="fw-bold">{{ transaction.beneficiary_name }}</div>
+        </div>
+        {% endif %}
+        {% if transaction.beneficiary_iban %}
+        <div class="mb-2">
+          <div class="text-muted small">IBAN</div>
+          <code class="fs-6">{{ transaction.beneficiary_iban }}</code>
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% if transaction.status == 'PENDING' %}
+        <div class="alert alert-warning mt-4">
+          <i class="bi bi-clock me-2"></i>Cette transaction est en cours de traitement.
+        </div>
+        {% elif transaction.status == 'REJECTED' %}
+        <div class="alert alert-danger mt-4">
+          <i class="bi bi-x-circle me-2"></i>Cette transaction a été rejetée.
+        </div>
+        {% elif transaction.status == 'COMPLETED' %}
+        <div class="alert alert-success mt-4">
+          <i class="bi bi-check-circle me-2"></i>Cette transaction a été effectuée avec succès.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-3">Informations complémentaires</h6>
+        <div class="mb-3">
+          <div class="text-muted small">ID Transaction</div>
+          <code class="small">{{ transaction.transaction_number }}</code>
+        </div>
+        <div class="mb-3">
+          <div class="text-muted small">Date de création</div>
+          <div>{{ transaction.created_at|date:'d/m/Y H:i:s' }}</div>
+        </div>
+        <div>
+          <div class="text-muted small">Statut</div>
+          <div class="fw-bold">{{ transaction.get_status_display }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

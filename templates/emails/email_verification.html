@@ -1,0 +1,41 @@
+{% extends 'emails/base.html' %}
+{% block content %}
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+    <tr>
+        <td style="font-family: Arial, Helvetica, sans-serif;">
+            <h1 style="margin: 0 0 20px 0; font-size: 22px; font-weight: bold; color: #0047bb; font-family: Arial, Helvetica, sans-serif;">Vérification de votre nouvelle adresse email</h1>
+            
+            <p style="margin: 0 0 15px 0; font-size: 14px; color: #333333; line-height: 1.6; font-family: Arial, Helvetica, sans-serif;">
+                Bonjour,
+            </p>
+            
+            <p style="margin: 0 0 25px 0; font-size: 14px; color: #333333; line-height: 1.6; font-family: Arial, Helvetica, sans-serif;">
+                Vous avez demandé à changer l'adresse email associée à votre compte bancaire Royal Bank of Canada.
+            </p>
+            
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 25px 0;">
+                <tr>
+                    <td align="center" style="padding: 10px 0;">
+                        <a href="{{ verify_url }}" style="display: inline-block; background-color: #0047bb; color: #ffffff; text-decoration: none; padding: 14px 35px; font-size: 15px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; border: none;">
+                            Confirmer la nouvelle adresse email
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            
+            <p style="margin: 20px 0 10px 0; font-size: 13px; color: #666666; line-height: 1.6; font-family: Arial, Helvetica, sans-serif;">
+                <strong style="color: #333333;">Ou copiez ce lien dans votre navigateur :</strong>
+            </p>
+            <p style="margin: 0 0 20px 0; font-size: 12px; color: #0047bb; word-break: break-all; font-family: Arial, Helvetica, sans-serif; line-height: 1.6;">
+                {{ verify_url }}
+            </p>
+            
+            <p style="margin: 20px 0 0 0; font-size: 13px; color: #666666; line-height: 1.6; font-family: Arial, Helvetica, sans-serif;">
+                <strong style="color: #333333;">Important :</strong><br>
+                • Ce lien est valide pendant <strong>1 heure</strong><br>
+                • Si vous n'êtes pas à l'origine de cette demande, ignorez ce message et contactez notre service client
+            </p>
+        </td>
+    </tr>
+</table>
+{% endblock %}

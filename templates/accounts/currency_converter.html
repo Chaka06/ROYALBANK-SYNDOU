@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+  <a href="/dashboard/" class="btn btn-outline-primary btn-sm mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Retour au tableau de bord
+  </a>
+  <h4 class="section-title">Calculateur de change</h4>
+  <p class="text-muted">Taux de change en temps réel</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-5">
+            <label class="form-label fw-bold">De</label>
+            <select class="form-select form-select-lg" id="from-currency">
+              <option value="USD">USD - Dollar américain</option>
+              <option value="CAD">CAD - Dollar canadien</option>
+              <option value="EUR">EUR - Euro</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2 d-flex align-items-end justify-content-center">
+            <button type="button" class="btn btn-outline-secondary btn-lg" id="swap-btn" title="Inverser">
+              <i class="bi bi-arrow-left-right"></i>
+            </button>
+          </div>
+          <div class="col-12 col-md-5">
+            <label class="form-label fw-bold">Vers</label>
+            <select class="form-select form-select-lg" id="to-currency">
+              <option value="CAD">CAD - Dollar canadien</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="USD">USD - Dollar américain</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label fw-bold">Montant</label>
+            <input type="number" class="form-control form-control-lg" id="amount" placeholder="0.00" step="0.01" min="0" value="100">
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label fw-bold">Résultat</label>
+            <div class="input-group input-group-lg">
+              <input type="text" class="form-control" id="result" readonly value="0.00">
+              <span class="input-group-text" id="result-currency">CAD</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-primary btn-lg" id="convert-btn">
+            <i class="bi bi-calculator me-2"></i>Convertir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-3">Taux de change actuels</h6>
+        <div id="rates-display" class="mb-3">
+          <div class="text-center text-muted py-4">
+            <i class="bi bi-arrow-repeat spin" style="font-size: 2rem;"></i>
+            <div class="mt-2">Chargement des taux...</div>
+          </div>
+        </div>
+        <div class="text-muted small">
+          <i class="bi bi-clock me-1"></i>
+          <span id="last-update">Mise à jour en cours...</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-3" id="refresh-rates">
+          <i class="bi bi-arrow-clockwise me-1"></i>Actualiser les taux
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.rate-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+.rate-item:last-child {
+  border-bottom: none;
+}
+</style>
+
+<script>
+let currentRates = {};
+let baseCurrency = 'USD';
+
+function formatCurrency(amount, currency) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+}
+
+function formatNumber(num) {
+  return new Intl.NumberFormat('fr-FR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 6
+  }).format(num);
+}
+
+function getRateKey(from, to) {
+  if (from === to) return 1;
+  if (from === 'USD') return `USD_${to}`;
+  if (to === 'USD') return `${from}_USD`;
+  return `${from}_${to}`;
+}
+
+function loadRates() {
+  document.getElementById('rates-display').innerHTML = `
+    <div class="text-center text-muted py-4">
+      <i class="bi bi-arrow-repeat spin" style="font-size: 2rem;"></i>
+      <div class="mt-2">Chargement des taux...</div>
+    </div>
+  `;
+  
+  fetch('/api/exchange-rates/')
+    .then(response => response.json())
+    .then(data => {
+      currentRates = data.rates;
+      baseCurrency = data.base;
+      updateRatesDisplay(data);
+      convert();
+    })
+    .catch(error => {
+      console.error('Error loading rates:', error);
+      document.getElementById('rates-display').innerHTML = `
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Erreur lors du chargement des taux
+        </div>
+      `;
+    });
+}
+
+function updateRatesDisplay(data) {
+  const rates = data.rates;
+  const timestamp = data.timestamp || new Date().toLocaleDateString('fr-FR');
+  
+  const html = `
+    <div class="rate-item">
+      <div class="d-flex justify-content-between">
+        <span class="text-muted">1 USD =</span>
+        <span class="fw-bold">${formatNumber(rates.USD_CAD)} CAD</span>
+      </div>
+    </div>
+    <div class="rate-item">
+      <div class="d-flex justify-content-between">
+        <span class="text-muted">1 USD =</span>
+        <span class="fw-bold">${formatNumber(rates.USD_EUR)} EUR</span>
+      </div>
+    </div>
+    <div class="rate-item">
+      <div class="d-flex justify-content-between">
+        <span class="text-muted">1 CAD =</span>
+        <span class="fw-bold">${formatNumber(rates.CAD_EUR)} EUR</span>
+      </div>
+    </div>
+    <div class="rate-item">
+      <div class="d-flex justify-content-between">
+        <span class="text-muted">1 EUR =</span>
+        <span class="fw-bold">${formatNumber(rates.EUR_CAD)} CAD</span>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('rates-display').innerHTML = html;
+  document.getElementById('last-update').textContent = `Mis à jour: ${timestamp}`;
+}
+
+function convert() {
+  const from = document.getElementById('from-currency').value;
+  const to = document.getElementById('to-currency').value;
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  
+  if (amount <= 0) {
+    document.getElementById('result').value = '0.00';
+    return;
+  }
+  
+  if (from === to) {
+    document.getElementById('result').value = formatNumber(amount);
+    document.getElementById('result-currency').textContent = to;
+    return;
+  }
+  
+  const rateKey = getRateKey(from, to);
+  const rate = currentRates[rateKey];
+  
+  if (!rate) {
+    document.getElementById('result').value = 'Erreur';
+    return;
+  }
+  
+  const result = amount * rate;
+  document.getElementById('result').value = formatNumber(result);
+  document.getElementById('result-currency').textContent = to;
+}
+
+// Event listeners
+document.getElementById('convert-btn').addEventListener('click', convert);
+document.getElementById('refresh-rates').addEventListener('click', loadRates);
+
+document.getElementById('from-currency').addEventListener('change', convert);
+document.getElementById('to-currency').addEventListener('change', convert);
+document.getElementById('amount').addEventListener('input', convert);
+
+document.getElementById('swap-btn').addEventListener('click', function() {
+  const from = document.getElementById('from-currency').value;
+  const to = document.getElementById('to-currency').value;
+  document.getElementById('from-currency').value = to;
+  document.getElementById('to-currency').value = from;
+  convert();
+});
+
+// Auto-refresh rates every 5 minutes
+setInterval(loadRates, 5 * 60 * 1000);
+
+// Load rates on page load
+loadRates();
+</script>
+{% endblock %}
+

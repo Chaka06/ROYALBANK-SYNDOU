@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+  <a href="/profiles/" class="btn btn-outline-primary btn-sm mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Retour au profil
+  </a>
+  <h4 class="section-title">Changer d'adresse email</h4>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        {% if messages %}
+          {% for m in messages %}
+            <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show" role="alert">
+              {{ m }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+        
+        <div class="mb-4">
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Email actuel :</strong> {{ request.user.email|default:"Aucun email enregistré" }}
+          </div>
+        </div>
+        
+        <form method="post" novalidate>
+          {% csrf_token %}
+          
+          <div class="mb-4">
+            <label for="id_email" class="form-label">
+              <i class="bi bi-envelope me-2"></i>Nouvelle adresse email
+            </label>
+            <input type="email" name="email" class="form-control form-control-lg" id="id_email" placeholder="nouvelle@email.com" required autofocus>
+            <div class="form-text">
+              Un lien de vérification sera envoyé à cette nouvelle adresse email.
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-send me-2"></i>Envoyer le lien de vérification
+            </button>
+            <a href="/profiles/" class="btn btn-outline-secondary">
+              Annuler
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

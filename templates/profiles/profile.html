@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-4">
+  <h4 class="section-title">Mon profil</h4>
+</div>
+
+{% if messages %}
+  {% for m in messages %}
+    <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show" role="alert">
+      {{ m }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-3">
+          <i class="bi bi-person-circle me-2"></i>Informations du compte
+        </h6>
+        <div class="mb-3">
+          <div class="text-muted small">Nom d'utilisateur</div>
+          <div class="fw-bold">{{ request.user.username }}</div>
+        </div>
+        <div class="mb-3">
+          <div class="text-muted small">Adresse email</div>
+          <div class="fw-bold">{{ request.user.email|default:"—" }}</div>
+        </div>
+        <div class="mb-3">
+          <div class="text-muted small">Nom complet</div>
+          <div class="fw-bold">{{ request.user.get_full_name|default:"—" }}</div>
+        </div>
+        <div>
+          <div class="text-muted small">Date d'inscription</div>
+          <div class="fw-bold">{{ request.user.date_joined|date:"d/m/Y" }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-3">
+          <i class="bi bi-shield-lock me-2"></i>Sécurité
+        </h6>
+        <div class="d-grid gap-2">
+          <a href="/profiles/email/change/" class="btn btn-outline-primary">
+            <i class="bi bi-envelope me-2"></i>Changer d'adresse email
+          </a>
+          <a href="/profiles/password/change/" class="btn btn-outline-primary">
+            <i class="bi bi-key me-2"></i>Changer le mot de passe
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

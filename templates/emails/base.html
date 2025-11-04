@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f5f5f5; font-size: 14px; line-height: 1.6; color: #333333;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f5f5f5; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e0e0e0;">
+                    <!-- Header RBC -->
+                    <tr>
+                        <td style="background-color: #0047bb; padding: 20px 30px; border-bottom: 4px solid #ffd100;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td style="color: #ffffff; font-size: 24px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; letter-spacing: 1px;">
+                                        ROYAL BANK
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #ffffff; font-size: 11px; font-family: Arial, Helvetica, sans-serif; margin-top: 3px; opacity: 0.95;">
+                                        Royal Bank of Canada
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 30px;">
+                            {% block content %}{% endblock %}
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f8f8f8; padding: 25px 30px; border-top: 1px solid #e0e0e0;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #666666; line-height: 1.6;">
+                                        <p style="margin: 0 0 8px 0; font-weight: bold; color: #0047bb;">Royal Bank of Canada</p>
+                                        <p style="margin: 0 0 12px 0;">Service bancaire en ligne</p>
+                                        <p style="margin: 0; font-size: 11px; color: #999999; border-top: 1px solid #e0e0e0; padding-top: 12px;">
+                                            Cet email a été envoyé automatiquement par Royal Bank of Canada. Veuillez ne pas répondre à cet email.<br>
+                                            Pour toute question, contactez notre service client au 1-800-ROYAL ou via votre espace en ligne.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
