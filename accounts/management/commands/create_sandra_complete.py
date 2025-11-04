@@ -2,6 +2,9 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from accounts.models import Account, Card
 from transactions.models import Transaction
+from notifications.models import Notification
+from datetime import datetime
+import pytz
 
 
 class Command(BaseCommand):
@@ -22,8 +25,11 @@ class Command(BaseCommand):
             }
         )
         
-        # Always update password and email
-        user.set_password(password)
+        # Only update password if user doesn't have a password set (preserves existing passwords)
+        if not user.has_usable_password():
+            user.set_password(password)
+            self.stdout.write(self.style.WARNING(f'⚠ Mot de passe défini pour {username} (aucun mot de passe existant)'))
+        # Always update other fields
         user.email = 'pelletiersandra138@gmail.com'
         user.first_name = 'Sandra'
         user.last_name = 'Pelletier'
@@ -104,6 +110,33 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'✓ Carte Visa créée: {card.masked_number()}'))
         else:
             self.stdout.write(self.style.SUCCESS(f'✓ Carte Visa mise à jour: {card.masked_number()}'))
+        
+        # Create a sample transaction if none exist
+        if not Transaction.objects.filter(owner=user).exists():
+            Transaction.objects.create(
+                owner=user,
+                created_at=pytz.timezone('America/Toronto').localize(datetime(2025, 3, 10, 14, 30, 0)),
+                amount_cents=150000,  # $1,500.00
+                description="Virement entrant - Salaire",
+                status="COMPLETED",
+                beneficiary_name="Employeur XYZ",
+                beneficiary_iban="CA12345678901234567890"
+            )
+            self.stdout.write(self.style.SUCCESS('✓ Transaction exemple créée'))
+        else:
+            self.stdout.write(self.style.WARNING('⚠ Transactions existantes, aucune nouvelle transaction créée'))
+        
+        # Create a sample notification if none exist
+        if not Notification.objects.filter(user=user).exists():
+            Notification.objects.create(
+                user=user,
+                title="Bienvenue sur ROYAL Bank",
+                body="Votre compte bancaire en ligne est maintenant actif. Vous pouvez gérer vos finances en toute sécurité.",
+                is_read=False
+            )
+            self.stdout.write(self.style.SUCCESS('✓ Notification exemple créée'))
+        else:
+            self.stdout.write(self.style.WARNING('⚠ Notifications existantes, aucune nouvelle notification créée'))
         
         self.stdout.write(f'\n✓ Compte complet créé/mis à jour avec succès!')
         self.stdout.write(f'\nIdentifiants:')
