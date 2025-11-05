@@ -38,7 +38,10 @@ if ENV_PATH.exists():
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-@2y$g6x$dmf#vlhir^9t-pwb)o7z1@6md(=ase#xwn__c!&zbw")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-@2y$g6x$dmf#vlhir^9t-pwb)o7z1@6md(=ase#xwn__c!&zbw"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Read DEBUG from environment if provided
@@ -190,8 +193,16 @@ WHITENOISE_INDEX_FILE = False
 
 # WhiteNoise cache configuration for admin static files
 WHITENOISE_MANIFEST_STRICT = False  # Don't fail if manifest entry missing
-WHITENOISE_SKIP_COMPRESSED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']  # Skip already compressed files  # Don't serve index files
+# Skip already compressed files - Don't serve index files
+WHITENOISE_SKIP_COMPRESSED_EXTENSIONS = [
+    'jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz',
+    'xz', 'br'
+]
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 # Default to filebased emails so messages are inspectable if SMTP isn't set
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "tmp" / "emails"
@@ -221,7 +232,11 @@ if EMAIL_HOST_ENV and EMAIL_HOST_USER_ENV and EMAIL_HOST_PASSWORD_ENV:
     EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "30"))
     # Log SMTP configuration (without password)
     logger = logging.getLogger(__name__)
-    logger.info(f"✓ SMTP configuré: {EMAIL_HOST}:{EMAIL_PORT}, utilisateur: {EMAIL_HOST_USER}, TLS: {EMAIL_USE_TLS}, SSL: {EMAIL_USE_SSL}")
+    logger.info(
+        f"✓ SMTP configuré: {EMAIL_HOST}:{EMAIL_PORT}, "
+        f"utilisateur: {EMAIL_HOST_USER}, TLS: {EMAIL_USE_TLS}, "
+        f"SSL: {EMAIL_USE_SSL}"
+    )
     logger.info(f"✓ DEFAULT_FROM_EMAIL: {DEFAULT_FROM_EMAIL}")
 else:
     # Log that file-based backend is being used with details
@@ -234,19 +249,28 @@ else:
     if not EMAIL_HOST_PASSWORD_ENV:
         missing.append("EMAIL_HOST_PASSWORD")
     logger.warning(f"⚠️  Variables SMTP manquantes: {', '.join(missing)}")
-    user_preview = f"{EMAIL_HOST_USER_ENV[:3]}..." if EMAIL_HOST_USER_ENV else "non défini"
-    logger.warning(f"⚠️  EMAIL_HOST='{EMAIL_HOST_ENV or 'non défini'}', EMAIL_HOST_USER='{user_preview}', EMAIL_HOST_PASSWORD={'***' if EMAIL_HOST_PASSWORD_ENV else 'non défini'}")
-    logger.warning(f"⚠️  Les emails seront sauvegardés dans {EMAIL_FILE_PATH} au lieu d'être envoyés par SMTP")
-    logger.warning("⚠️  Configurez toutes les variables EMAIL_HOST, EMAIL_HOST_USER et EMAIL_HOST_PASSWORD dans Render Dashboard")
+    user_preview = (
+        f"{EMAIL_HOST_USER_ENV[:3]}..." if EMAIL_HOST_USER_ENV
+        else "non défini"
+    )
+    password_status = '***' if EMAIL_HOST_PASSWORD_ENV else 'non défini'
+    logger.warning(
+        f"⚠️  EMAIL_HOST='{EMAIL_HOST_ENV or 'non défini'}', "
+        f"EMAIL_HOST_USER='{user_preview}', "
+        f"EMAIL_HOST_PASSWORD={password_status}"
+    )
+    logger.warning(
+        f"⚠️  Les emails seront sauvegardés dans {EMAIL_FILE_PATH} "
+        f"au lieu d'être envoyés par SMTP"
+    )
+    logger.warning(
+        "⚠️  Configurez toutes les variables EMAIL_HOST, "
+        "EMAIL_HOST_USER et EMAIL_HOST_PASSWORD dans Render Dashboard"
+    )
 LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SITE_URL = os.getenv("SITE_URL", "http://127.0.0.1:8000")
 

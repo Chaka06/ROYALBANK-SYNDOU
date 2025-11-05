@@ -15,8 +15,10 @@ class Account(models.Model):
     can_transact = models.BooleanField(default=True)
     # Banking details - Format canadien
     account_number = models.CharField(max_length=20, blank=True)
-    institution_number = models.CharField(max_length=3, blank=True)  # Institution (3 chiffres) - RBC = 003
-    transit_number = models.CharField(max_length=5, blank=True)  # Transit (5 chiffres) - Numéro de succursale
+    # Institution (3 chiffres) - RBC = 003
+    institution_number = models.CharField(max_length=3, blank=True)
+    # Transit (5 chiffres) - Numéro de succursale
+    transit_number = models.CharField(max_length=5, blank=True)
     bank_name = models.CharField(max_length=100, default='Royal Bank of Canada')
     branch_code = models.CharField(max_length=10, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -59,6 +61,11 @@ class Account(models.Model):
         return f"Compte de {self.display_name}"
 
 
+# NOTE: Modèle Card - Actuellement désactivé mais conservé pour usage futur
+# La fonctionnalité Card a été commentée dans les vues et URLs
+# (voir accounts/views.py et accounts/urls.py)
+# Le modèle existe toujours dans la base de données via la migration 0002
+# Pour supprimer complètement: créer une migration DeleteModel et supprimer cette classe
 class Card(models.Model):
     TYPE_CHOICES = (
         ('VISA', 'Visa'),
