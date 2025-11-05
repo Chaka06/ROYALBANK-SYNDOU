@@ -32,10 +32,6 @@
           <div class="text-muted small">Nom complet</div>
           <div class="fw-bold">{{ request.user.get_full_name|default:"—" }}</div>
         </div>
-        <div>
-          <div class="text-muted small">Date d'inscription</div>
-          <div class="fw-bold">{{ request.user.date_joined|date:"d/m/Y" }}</div>
-        </div>
       </div>
     </div>
   </div>
