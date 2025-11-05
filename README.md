@@ -75,6 +75,26 @@ python manage.py runserver
    - `ALLOWED_HOSTS` (configuré automatiquement)
    - `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` (pour les emails SMTP)
 
+## Notifications par email
+
+Les utilisateurs reçoivent un email automatiquement à chaque création d'une notification par l'administrateur.
+
+- Le signal est défini dans `notifications/models.py` et envoie un email HTML avec le template `templates/emails/notification.html`.
+- En développement (sans SMTP), les emails sont écrits dans `tmp/emails/` grâce au backend "filebased".
+- En production, configurez les variables SMTP suivantes pour activer l'envoi réel :
+
+```env
+DEFAULT_FROM_EMAIL=support@virement.net
+EMAIL_HOST=mail.virement.net
+EMAIL_PORT=587
+EMAIL_HOST_USER=support@virement.net
+EMAIL_HOST_PASSWORD=***  # à renseigner dans Render en tant que Secret
+EMAIL_USE_TLS=1
+EMAIL_USE_SSL=0
+```
+
+Sans `EMAIL_HOST_PASSWORD`, Django basculera automatiquement sur l'écriture de fichiers dans `tmp/emails/` et aucun email ne sera expédié.
+
 ## Structure du projet
 
 ```
