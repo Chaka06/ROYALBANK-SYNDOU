@@ -324,3 +324,20 @@ def whitenoise_immutable_file_test(path, url):
     return False
 
 WHITENOISE_IMMUTABLE_FILE_TEST = whitenoise_immutable_file_test
+
+# Trust the Render proxy for HTTPS so Django génère des URLs correctes et
+# reconnaît le schéma HTTPS derrière le proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# CSRF trusted origins: requis en prod pour les POST/formulaires depuis le domaine custom
+# On génère à partir des ALLOWED_HOSTS (hors wildcards) avec schéma https
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{host}"
+    for host in ALLOWED_HOSTS
+    if host and not host.startswith("*")
+]
+
+# Cookies sécurisés en production
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
