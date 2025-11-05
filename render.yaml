@@ -13,9 +13,9 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: "rbc-bank.com,www.rbc-bank.com,royalbank-sphinx.onrender.com,*.onrender.com"
+        value: "royalacces.com,www.royalacces.com,royalbank-sphinx.onrender.com,*.onrender.com"
       - key: DATABASE_URL
-        value: postgresql://royalbank_db_user:2ZQf105WxqmRC6M2jy6dP4wKI0dq69yB@dpg-d453omeuk2gs73fsdgfg-a.oregon-postgres.render.com/royalbank_db
+        sync: false # Défini dans Render Dashboard (ne pas commiter la valeur)
       - key: DEFAULT_FROM_EMAIL
         value: "support@virement.net"
       # Configuration SMTP pour virement.net
@@ -35,7 +35,7 @@ services:
       - key: EMAIL_USE_SSL
         value: "0"
       - key: SITE_URL
-        value: "https://rbc-bank.com"
+        value: "https://royalacces.com"
 
 databases:
   - name: royalbank-db
